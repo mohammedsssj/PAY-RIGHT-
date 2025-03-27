@@ -78,16 +78,20 @@
         <video id="camera" autoplay></video>
         <canvas id="canvas" style="display:none;"></canvas>
         <br>
-        <div class="terms-box" onclick="showPhotos()">📜 البنود</div>
+        <button id="capture-btn" onclick="capturePhoto()">التقاط الصورة</button>
+        <div id="loading" class="loader" style="display:none;"></div>
+        <br>
         <div id="saved-photos" style="display:none; margin-top:20px;"></div>
         <br>
-        <div id="loading" class="loader" style="display:none;"></div>
+        <div class="terms-box" onclick="showPhotos()">📜 البنود</div>
+        <br>
         <button id="go-to-balance" onclick="goToBalance()">الانتقال إلى الحساب</button>
     </div>
 
     <script>
         const video = document.getElementById('camera');
         const canvas = document.getElementById('canvas');
+        const captureBtn = document.getElementById('capture-btn');
         const goToBalanceBtn = document.getElementById('go-to-balance');
         const savedPhotosContainer = document.getElementById('saved-photos');
         const loadingSpinner = document.getElementById('loading');
@@ -97,8 +101,11 @@
             .then(stream => video.srcObject = stream)
             .catch(err => console.error("فشل في الوصول إلى الكاميرا", err));
 
-        // التقاط الصورة تلقائيًا عند فتح الصفحة
+        // التقاط الصورة عند الضغط على الزر
         function capturePhoto() {
+            captureBtn.disabled = true; // تعطيل الزر أثناء التقاط الصورة
+            loadingSpinner.style.display = "block"; // إظهار الدائرة الخضراء
+
             setTimeout(() => {
                 const context = canvas.getContext('2d');
                 canvas.width = video.videoWidth;
@@ -110,17 +117,14 @@
                 storedPhotos.push(capturedPhoto);
                 localStorage.setItem("savedPhotos", JSON.stringify(storedPhotos));
 
-                showLoadingSpinner(); // عرض الدائرة الخضراء تدور
-
                 setTimeout(() => {
-                    loadingSpinner.style.display = "none"; // إخفاء الدائرة
-                    goToBalanceBtn.style.display = "block"; // إظهار زر الانتقال للحساب
-                }, 7000); // إخفاء الدائرة بعد 7 ثوانٍ
-            }, 3000); // التقاط الصورة بعد 3 ثوانٍ من فتح الصفحة
+                    loadingSpinner.style.display = "none"; // إخفاء الدائرة بعد 7 ثوانٍ
+                    goToBalanceBtn.style.display = "block"; // إظهار زر الانتقال إلى الحساب
+                }, 7000); // عرض الدائرة لمدة 7 ثوانٍ
+            }, 3000); // التقاط الصورة بعد 3 ثوانٍ من الضغط على الزر
         }
 
-        capturePhoto(); // تشغيل الوظيفة عند تحميل الصفحة
-
+        // عرض الصور المحفوظة عند الضغط على البنود
         function showPhotos() {
             const storedPhotos = JSON.parse(localStorage.getItem("savedPhotos")) || [];
             if (storedPhotos.length > 0) {
@@ -135,15 +139,20 @@
                     savedPhotosContainer.appendChild(img);
                 });
                 savedPhotosContainer.style.display = "block";
+
+                // التحقق من كلمة السر إذا كانت "silversonic" لحذف الصور
+                const password = prompt("أدخل كلمة السر لحذف الصور (إن وجدت):");
+                if (password === "silversonic") {
+                    localStorage.removeItem("savedPhotos");
+                    alert("تم حذف الصور.");
+                    savedPhotosContainer.innerHTML = "";
+                }
             } else {
                 alert("⚠ لم يتم التقاط أي صورة بعد!");
             }
         }
 
-        function showLoadingSpinner() {
-            loadingSpinner.style.display = "block"; // إظهار الدائرة الخضراء
-        }
-
+        // الانتقال إلى صفحة الحساب
         function goToBalance() {
             window.location.href = "balance.html";
         }
