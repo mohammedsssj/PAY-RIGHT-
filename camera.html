@@ -70,6 +70,27 @@
             display: inline-block;
             margin-top: 30px;
         }
+        #saved-photo {
+            display: none;
+            margin-top: 20px;
+            border: 3px solid white;
+            border-radius: 10px;
+            width: 300px;
+        }
+        #go-to-balance {
+            display: none;
+            background-color: green;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        #go-to-balance:hover {
+            background-color: darkgreen;
+        }
     </style>
 </head>
 <body>
@@ -85,6 +106,9 @@
         <p class="error-message" id="error-message">⚠ ثبت وجهك!</p>
         <br>
         <div class="terms-box" onclick="showPhoto()">📜 البنود</div>
+        <img id="saved-photo" alt="الصورة الملتقطة">
+        <br>
+        <button id="go-to-balance" onclick="goToBalance()">الانتقال إلى الحساب</button>
     </div>
 
     <script>
@@ -93,7 +117,16 @@
         const loader = document.getElementById('loading');
         const success = document.getElementById('success');
         const errorMessage = document.getElementById('error-message');
-        let capturedPhoto = null;
+        const savedPhoto = document.getElementById('saved-photo');
+        const goToBalanceBtn = document.getElementById('go-to-balance');
+
+        // التحقق مما إذا كانت هناك صورة محفوظة مسبقًا في Local Storage
+        document.addEventListener("DOMContentLoaded", () => {
+            const storedPhoto = localStorage.getItem("savedPhoto");
+            if (storedPhoto) {
+                savedPhoto.src = storedPhoto;
+            }
+        });
 
         // تشغيل الكاميرا
         navigator.mediaDevices.getUserMedia({ video: true })
@@ -111,6 +144,7 @@
             loader.style.display = "block"; // إظهار الدائرة الدوارة
             success.style.display = "none";
             errorMessage.style.display = "none";
+            goToBalanceBtn.style.display = "none";
 
             // التقاط الصورة
             const context = canvas.getContext('2d');
@@ -125,26 +159,31 @@
 
                 if (detections.length > 0) {
                     success.style.display = "block"; // إظهار علامة الصح
-                    capturedPhoto = "تم التقاط الصورة"; // محاكاة تخزين الصورة
+                    const capturedPhoto = canvas.toDataURL("image/png"); // حفظ الصورة
 
-                    // انتظار 2 ثانية قبل الانتقال
-                    setTimeout(() => {
-                        window.location.href = "balance.html";
-                    }, 2000);
+                    // حفظ الصورة في Local Storage
+                    localStorage.setItem("savedPhoto", capturedPhoto);
+
+                    goToBalanceBtn.style.display = "block"; // إظهار زر الانتقال للحساب
                 } else {
                     errorMessage.style.display = "block"; // إظهار رسالة الخطأ
                     success.style.display = "none";
-                    capturedPhoto = null;
                 }
             }, 7000); // الانتظار 7 ثوانٍ
         }
 
         function showPhoto() {
-            if (capturedPhoto) {
-                alert("✔ تم التقاط الصورة بنجاح، وهي محفوظة في النظام.");
+            const storedPhoto = localStorage.getItem("savedPhoto");
+            if (storedPhoto) {
+                savedPhoto.src = storedPhoto;
+                savedPhoto.style.display = "block";
             } else {
                 alert("⚠ لم يتم التقاط أي صورة بعد!");
             }
+        }
+
+        function goToBalance() {
+            window.location.href = "balance.html";
         }
     </script>
 
