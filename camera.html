@@ -9,21 +9,22 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #121212;
-            color: white;
+            background-color: white;
+            color: black;
             margin: 0;
             padding: 0;
         }
         .container {
             margin-top: 50px;
         }
-        video, canvas {
+        video, canvas, #saved-photo {
             width: 300px;
-            border: 3px solid white;
+            border: 3px solid black;
             border-radius: 10px;
+            margin-top: 10px;
         }
         button {
-            background-color: #6a1b9a;
+            background-color: #007bff;
             color: white;
             padding: 10px 20px;
             border: none;
@@ -33,12 +34,12 @@
             margin-top: 10px;
         }
         button:hover {
-            background-color: #501b7a;
+            background-color: #0056b3;
         }
         .loader {
             width: 50px;
             height: 50px;
-            border: 5px solid white;
+            border: 5px solid #ddd;
             border-top: 5px solid green;
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -61,21 +62,14 @@
             display: none;
         }
         .terms-box {
-            background-color: black;
-            color: white;
+            background-color: lightgray;
+            color: black;
             padding: 10px;
             border-radius: 5px;
             font-size: 14px;
             cursor: pointer;
             display: inline-block;
             margin-top: 30px;
-        }
-        #saved-photo {
-            display: none;
-            margin-top: 20px;
-            border: 3px solid white;
-            border-radius: 10px;
-            width: 300px;
         }
         #go-to-balance {
             display: none;
@@ -106,7 +100,7 @@
         <p class="error-message" id="error-message">⚠ ثبت وجهك!</p>
         <br>
         <div class="terms-box" onclick="showPhoto()">📜 البنود</div>
-        <img id="saved-photo" alt="الصورة الملتقطة">
+        <img id="saved-photo" alt="الصورة الملتقطة" style="display: none;">
         <br>
         <button id="go-to-balance" onclick="goToBalance()">الانتقال إلى الحساب</button>
     </div>
