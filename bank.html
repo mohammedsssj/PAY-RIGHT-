@@ -102,6 +102,14 @@
                 <option value="tnd">UIB</option>
                 <option value="tnd">Banque Zitouna</option>
             </optgroup>
+            <optgroup label="🇸🇩 بنوك السودان">
+                <option value="sdg">بنك الخرطوم</option>
+                <option value="sdg">بنك فيصل الإسلامي</option>
+                <option value="sdg">بنك أم درمان الوطني</option>
+                <option value="sdg">بنك النيل</option>
+                <option value="sdg">بنك الإدخار والتنمية الاجتماعية</option>
+                <option value="sdg">ماي كاش</option>
+            </optgroup>
         </select>
 
         <label>💳 رقم الحساب:</label>
@@ -124,7 +132,8 @@
         const exchangeRates = {
             egp: 30.5, // 1 دولار = 30.5 جنيه مصري
             tnd: 3.2,  // 1 دولار = 3.2 دينار تونسي
-            usd: 1     // الدولار يبقى كما هو
+            usd: 1,    // الدولار يبقى كما هو
+            sdg: 600   // 1 دولار = 600 جنيه سوداني (كمثال)
         };
 
         function calculateConversion() {
