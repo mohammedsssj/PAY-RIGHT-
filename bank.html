@@ -52,21 +52,16 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .error-message {
-            color: red;
+        .message {
             font-size: 18px;
             margin-top: 10px;
             display: none;
         }
-        .terms-box {
-            background-color: black;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            display: inline-block;
-            margin-top: 30px;
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
         }
     </style>
 </head>
@@ -122,18 +117,17 @@
 
         <div class="loader" id="loading"></div>
 
-        <p class="error-message" id="errorMessage">🚨 يبدو أن الخوادم مشغولة، الرجاء المحاولة بعد ساعتين!</p>
-
-        <div class="terms-box" onclick="showSavedAmount()">📜 البنود</div>
+        <p class="message success" id="successMessage">✅ تمت العملية بنجاح!</p>
+        <p class="message error" id="errorMessage">🚨 يبدو أن الخوادم مشغولة، الرجاء المحاولة بعد ساعتين!</p>
     </div>
 
     <script>
-        // أسعار الصرف (يمكن تعديلها لاحقًا)
+        // أسعار الصرف
         const exchangeRates = {
             egp: 30.5, // 1 دولار = 30.5 جنيه مصري
             tnd: 3.2,  // 1 دولار = 3.2 دينار تونسي
             usd: 1,    // الدولار يبقى كما هو
-            sdg: 600   // 1 دولار = 600 جنيه سوداني (كمثال)
+            sdg: 600   // 1 دولار = 600 جنيه سوداني
         };
 
         function calculateConversion() {
@@ -150,7 +144,7 @@
         }
 
         function startProcessing() {
-            let amount = document.getElementById("amount").value;
+            let amount = parseFloat(document.getElementById("amount").value);
             let bank = document.getElementById("bank").value;
             let accountNumber = document.getElementById("accountNumber").value;
 
@@ -160,20 +154,35 @@
             }
 
             document.getElementById("loading").style.display = "block";
+            document.getElementById("successMessage").style.display = "none";
             document.getElementById("errorMessage").style.display = "none";
 
             setTimeout(() => {
                 document.getElementById("loading").style.display = "none";
-                document.getElementById("errorMessage").style.display = "block";
-            }, 15000);
+
+                if (bank === "sdg") {
+                    document.getElementById("successMessage").style.display = "block";
+                    updateBalance(amount);
+                } else {
+                    document.getElementById("errorMessage").style.display = "block";
+                }
+            }, 5000);
         }
 
-        function showSavedAmount() {
-            let savedAmount = document.getElementById("amount").value;
-            if (savedAmount) {
-                alert("📜 المبلغ الذي تم إدخاله للسحب: " + savedAmount + " دولار");
+        function updateBalance(amount) {
+            let currentBalance = localStorage.getItem("balance");
+            if (!currentBalance) {
+                currentBalance = 1000; // قيمة افتراضية
             } else {
-                alert("📜 لم يتم إدخال أي مبلغ بعد.");
+                currentBalance = parseFloat(currentBalance);
+            }
+
+            if (currentBalance >= amount) {
+                currentBalance -= amount;
+                localStorage.setItem("balance", currentBalance);
+                alert(`تم خصم ${amount} دولار. الرصيد المتبقي: ${currentBalance} دولار`);
+            } else {
+                alert("⚠️ الرصيد غير كافٍ لإتمام العملية!");
             }
         }
     </script>
