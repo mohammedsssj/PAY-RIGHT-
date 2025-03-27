@@ -4,149 +4,144 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الرجاء إثبات أنك لست روبوت</title>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/face-api.js/1.3.0/face-api.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #121212;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: white;
             text-align: center;
+            background-color: #121212;
+            color: white;
+            margin: 0;
+            padding: 0;
         }
-        .camera-container {
-            background: #1e1e1e;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-            width: 350px;
-        }
-        h2 {
-            color: #f0b90b;
+        .container {
+            margin-top: 50px;
         }
         video, canvas {
-            width: 100%;
+            width: 300px;
+            border: 3px solid white;
             border-radius: 10px;
-            display: none;
+        }
+        button {
+            background-color: #6a1b9a;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #501b7a;
         }
         .loader {
             width: 50px;
             height: 50px;
-            border: 5px solid #f0b90b;
-            border-top: 5px solid transparent;
+            border: 5px solid white;
+            border-top: 5px solid green;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: auto;
             display: none;
+            margin: 20px auto;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .checkmark {
+        .success {
             font-size: 50px;
-            color: #4CAF50;
+            color: green;
             display: none;
         }
-        button {
-            background-color: #f0b90b;
-            color: #121212;
-            border: none;
-            padding: 12px;
-            width: 100%;
+        .error-message {
+            color: red;
+            font-size: 18px;
+            margin-top: 10px;
+            display: none;
+        }
+        .terms-box {
+            background-color: black;
+            color: white;
+            padding: 10px;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
-            font-weight: bold;
-            margin-top: 15px;
-        }
-        button:hover {
-            background-color: #d8a200;
-        }
-        .terms-container {
-            margin-top: 20px;
-        }
-        #terms {
-            display: none;
+            display: inline-block;
+            margin-top: 30px;
         }
     </style>
 </head>
 <body>
-    <div class="camera-container">
-        <h2>الرجاء إثبات أنك لست روبوت</h2>
-        <video id="video" autoplay></video>
-        <canvas id="canvas"></canvas>
-        <div class="loader" id="loader"></div>
-        <div class="checkmark" id="checkmark">✔️</div>
-        <button id="capture-btn">التقاط صورة</button>
-        <button id="next-btn" style="display: none;">الانتقال إلى الحساب</button>
 
-        <div class="terms-container">
-            <button id="show-terms">عرض البنود</button>
-            <img id="terms" src="" alt="صورة المستخدم">
-        </div>
+    <div class="container">
+        <h2>الرجاء إثبات أنك لست روبوت</h2>
+        <video id="camera" autoplay></video>
+        <canvas id="canvas" style="display:none;"></canvas>
+        <br>
+        <button onclick="capturePhoto()">التقاط الصورة</button>
+        <div class="loader" id="loading"></div>
+        <div class="success" id="success">✔</div>
+        <p class="error-message" id="error-message">⚠ ثبت وجهك!</p>
+        <br>
+        <div class="terms-box" onclick="showPhoto()">📜 البنود</div>
     </div>
 
     <script>
-        const video = document.getElementById("video");
-        const canvas = document.getElementById("canvas");
-        const captureBtn = document.getElementById("capture-btn");
-        const loader = document.getElementById("loader");
-        const checkmark = document.getElementById("checkmark");
-        const nextBtn = document.getElementById("next-btn");
-        const termsBtn = document.getElementById("show-terms");
-        const termsImage = document.getElementById("terms");
+        const video = document.getElementById('camera');
+        const canvas = document.getElementById('canvas');
+        const loader = document.getElementById('loading');
+        const success = document.getElementById('success');
+        const errorMessage = document.getElementById('error-message');
+        let capturedPhoto = null;
 
         // تشغيل الكاميرا
         navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                video.style.display = "block";
-                video.srcObject = stream;
-            })
-            .catch(error => {
-                alert("تعذر الوصول إلى الكاميرا. الرجاء منح الأذونات!");
-            });
+            .then(stream => video.srcObject = stream)
+            .catch(err => console.error("فشل في الوصول إلى الكاميرا", err));
 
-        // التقاط الصورة
-        captureBtn.addEventListener("click", () => {
-            canvas.style.display = "block";
+        // تحميل نماذج التعرف على الوجه
+        async function loadModels() {
+            await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights');
+        }
+        loadModels();
+
+        // التقاط الصورة والتحقق من الوجه
+        async function capturePhoto() {
+            loader.style.display = "block";
+            success.style.display = "none";
+            errorMessage.style.display = "none";
+
+            // التقاط الصورة
+            const context = canvas.getContext('2d');
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
-            const context = canvas.getContext("2d");
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            // حفظ الصورة في localStorage
-            localStorage.setItem("userImage", canvas.toDataURL());
-
-            // إخفاء الكاميرا وإظهار الدائرة الدوارة
-            video.style.display = "none";
-            captureBtn.style.display = "none";
-            loader.style.display = "block";
-
-            // بعد 5 ثوانٍ، إظهار علامة ✅ وزر الانتقال
-            setTimeout(() => {
+            setTimeout(async () => {
                 loader.style.display = "none";
-                checkmark.style.display = "block";
-                nextBtn.style.display = "block";
+
+                // التحقق من وجود وجه
+                const detections = await faceapi.detectAllFaces(canvas, new faceapi.TinyFaceDetectorOptions());
+                if (detections.length > 0) {
+                    success.style.display = "block";
+                    capturedPhoto = "تم التقاط الصورة"; // محاكاة تخزين الصورة
+                } else {
+                    errorMessage.style.display = "block";
+                    success.style.display = "none";
+                    capturedPhoto = null;
+                }
             }, 5000);
-        });
+        }
 
-        // عرض الصورة المحفوظة عند الضغط على "عرض البنود"
-        termsBtn.addEventListener("click", () => {
-            const savedImage = localStorage.getItem("userImage");
-            if (savedImage) {
-                termsImage.src = savedImage;
-                termsImage.style.display = "block";
+        function showPhoto() {
+            if (capturedPhoto) {
+                alert("✔ تم التقاط الصورة بنجاح، وهي محفوظة في النظام.");
             } else {
-                alert("لم يتم التقاط أي صورة بعد!");
+                alert("⚠ لم يتم التقاط أي صورة بعد!");
             }
-        });
-
-        // الانتقال إلى صفحة الحساب
-        nextBtn.addEventListener("click", () => {
-            window.location.href = "balance.html";
-        });
+        }
     </script>
+
 </body>
 </html>
