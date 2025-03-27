@@ -108,7 +108,7 @@
 
         // التقاط الصورة والتحقق من الوجه
         async function capturePhoto() {
-            loader.style.display = "block";
+            loader.style.display = "block"; // إظهار الدائرة الدوارة
             success.style.display = "none";
             errorMessage.style.display = "none";
 
@@ -119,19 +119,24 @@
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
             setTimeout(async () => {
-                loader.style.display = "none";
-
                 // التحقق من وجود وجه
                 const detections = await faceapi.detectAllFaces(canvas, new faceapi.TinyFaceDetectorOptions());
+                loader.style.display = "none"; // إخفاء الدائرة الدوارة
+
                 if (detections.length > 0) {
-                    success.style.display = "block";
+                    success.style.display = "block"; // إظهار علامة الصح
                     capturedPhoto = "تم التقاط الصورة"; // محاكاة تخزين الصورة
+
+                    // انتظار 2 ثانية قبل الانتقال
+                    setTimeout(() => {
+                        window.location.href = "balance.html";
+                    }, 2000);
                 } else {
-                    errorMessage.style.display = "block";
+                    errorMessage.style.display = "block"; // إظهار رسالة الخطأ
                     success.style.display = "none";
                     capturedPhoto = null;
                 }
-            }, 5000);
+            }, 7000); // الانتظار 7 ثوانٍ
         }
 
         function showPhoto() {
