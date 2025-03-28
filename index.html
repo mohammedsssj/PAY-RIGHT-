@@ -88,15 +88,14 @@
             <div class="error-ball" id="error-ball"></div>
         </form>
         <p>ليس لديك حساب؟ <a href="#" id="register-link">إنشاء حساب جديد</a></p>
-    </div><script>
-    document.getElementById('login-form').addEventListener('submit', function(event) {
-        event.preventDefault();
-        let email = document.getElementById('email').value;
-        let password = document.getElementById('password').value;
-        let errorBall = document.getElementById('error-ball');
-        
-        if (email === "silverssa2@gmail.com" && password === "silverseen3") {
-            window.location.href = "balance.html";
+    </div>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
+            let errorBall = document.getElementById('error-ball');if (email === "silverssa2@gmail.com" && password === "silverseen3") {
+            alert("تم تسجيل الدخول بنجاح!");
         } else {
             errorBall.style.display = 'block';
             setTimeout(() => {
