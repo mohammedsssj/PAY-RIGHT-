@@ -1,15 +1,14 @@
-وه<!DOCTYPE html>
-<html lang="ar">
+<!DOCTYPE html><html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رصيدي - PAY RIGHT</title>
+    <title>My Balance - PAY RIGHT</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             text-align: center;
-            direction: rtl;
+            direction: ltr;
             margin: 0;
             padding: 0;
         }
@@ -101,82 +100,76 @@
         }
     </style>
 </head>
-<body>
-
-    <!-- الهيدر -->
-    <div class="header">
-        <span>رصيدك في PAY RIGHT</span>
-        <div>
-            <span>محمد</span>
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="User">
-        </div>
+<body><div class="header">
+    <span>Your Balance in PAY RIGHT</span>
+    <div>
+        <span>John</span>
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="User">
     </div>
+</div>
 
-    <!-- صندوق الرصيد -->
-    <div class="container">
-        <p>رصيدك الحالي</p>
-        <p class="balance">43300 دولار أمريكي</p>
+<div class="container">
+    <p>Your Current Balance</p>
+    <p class="balance">$43,300 USD</p>
+</div>
+
+<div class="grid">
+    <div class="icon-box" onclick="showLoadingAndGoToBank()">
+        <img src="https://cdn-icons-png.flaticon.com/512/2910/2910796.png" alt="Withdraw">
+        <p>Withdraw Money</p>
     </div>
-
-    <!-- الشبكة -->
-    <div class="grid">
-        <div class="icon-box" onclick="showLoadingAndGoToBank()">
-            <img src="https://cdn-icons-png.flaticon.com/512/2331/2331949.png" alt="Withdraw">
-            <p>سحب الأموال</p>
-        </div>
-        <div class="icon-box" onclick="showLoadingAndGoToBank()">
-            <img src="https://cdn-icons-png.flaticon.com/512/1256/1256650.png" alt="Transfer">
-            <p>تحويل الأموال</p>
-        </div>
-        <div class="icon-box" onclick="showLoadingAndGoToBank()">
-            <img src="https://cdn-icons-png.flaticon.com/512/633/633595.png" alt="Bills">
-            <p>دفع الفواتير</p>
-        </div>
-        <div class="icon-box" onclick="showPopup()">
-            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828764.png" alt="Deposit">
-            <p>شحن الرصيد</p>
-        </div>
-        <div class="icon-box" onclick="showPopup()">
-            <img src="https://cdn-icons-png.flaticon.com/512/1041/1041916.png" alt="Services">
-            <p>الخدمات المالية</p>
-        </div>
-        <div class="icon-box" onclick="showPopup()">
-            <img src="https://cdn-icons-png.flaticon.com/512/565/565567.png" alt="More">
-            <p>المزيد</p>
-        </div>
+    <div class="icon-box" onclick="showLoadingAndGoToBank()">
+        <img src="https://cdn-icons-png.flaticon.com/512/1037/1037855.png" alt="Transfer">
+        <p>Transfer Money</p>
     </div>
-
-    <!-- نافذة منبثقة للكرة والقيد -->
-    <div id="popup" class="popup">
-        <div class="ball"></div>
-        <p id="popup-message">عذرا، لا يمكن تنفيذ هذه المعاملة حاليا بسبب قيود الدولة</p>
+    <div class="icon-box" onclick="showLoadingAndGoToBank()">
+        <img src="https://cdn-icons-png.flaticon.com/512/2331/2331949.png" alt="Bills">
+        <p>Pay Bills</p>
     </div>
+    <div class="icon-box" onclick="showPopup()">
+        <img src="https://cdn-icons-png.flaticon.com/512/1041/1041916.png" alt="Deposit">
+        <p>Top Up</p>
+    </div>
+    <div class="icon-box" onclick="showPopup()">
+        <img src="https://cdn-icons-png.flaticon.com/512/907/907843.png" alt="Services">
+        <p>Financial Services</p>
+    </div>
+    <div class="icon-box" onclick="showPopup()">
+        <img src="https://cdn-icons-png.flaticon.com/512/565/565567.png" alt="More">
+        <p>More</p>
+    </div>
+</div>
 
-    <script>
-        function showLoadingAndGoToBank() {
-            let popup = document.getElementById("popup");
-            let message = document.getElementById("popup-message");
-            message.style.display = "none";  // إخفاء الرسالة في البداية
-            
-            popup.style.display = "block";
+<div id="popup" class="popup">
+    <div class="ball"></div>
+    <p id="popup-message">Sorry, this transaction cannot be completed due to country restrictions</p>
+</div>
 
-            setTimeout(() => {
-                window.location.href = "bank.html";
-            }, 8000);  // بعد 8 ثوانٍ انتقل إلى bank.html
-        }
+<script>
+    function showLoadingAndGoToBank() {
+        let popup = document.getElementById("popup");
+        let message = document.getElementById("popup-message");
+        message.style.display = "none";
+        
+        popup.style.display = "block";
 
-        function showPopup() {
-            let popup = document.getElementById("popup");
-            let message = document.getElementById("popup-message");
-            message.style.display = "block";  // عرض الرسالة
-            
-            popup.style.display = "block";
+        setTimeout(() => {
+            window.location.href = "bank.html";
+        }, 8000);
+    }
 
-            setTimeout(() => {
-                popup.style.display = "none";
-            }, 5000);  // بعد 5 ثوانٍ إخفاء النافذة المنبثقة
-        }
-    </script>
+    function showPopup() {
+        let popup = document.getElementById("popup");
+        let message = document.getElementById("popup-message");
+        message.style.display = "block";
+        
+        popup.style.display = "block";
+
+        setTimeout(() => {
+            popup.style.display = "none";
+        }, 5000);
+    }
+</script>
 
 </body>
 </html>
