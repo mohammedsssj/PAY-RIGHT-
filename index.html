@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="ar">
+<!DOCTYPE html><html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,16 +20,12 @@
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
             width: 350px;
+            position: relative;
         }
         .login-container h1 {
             font-size: 28px;
             margin-bottom: 5px;
             color: #f0b90b;
-        }
-        .login-container p {
-            font-size: 14px;
-            color: #ccc;
-            margin-bottom: 20px;
         }
         input {
             display: block;
@@ -56,10 +51,6 @@
         button:hover {
             background-color: #d8a200;
         }
-        p {
-            margin-top: 15px;
-            font-size: 14px;
-        }
         a {
             color: #f0b90b;
             text-decoration: none;
@@ -68,34 +59,59 @@
         a:hover {
             text-decoration: underline;
         }
+        .error-ball {
+            width: 20px;
+            height: 20px;
+            background-color: blue;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: pulse 5s infinite alternate;
+            display: none;
+        }
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); }
+            100% { transform: translateX(-50%) scale(1.5); }
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
         <h1>Pay Right</h1>
-        <p>أهلاً بك في **Pay Right**، حيث نوفر لك أفضل الحلول للدفع الآمن والموثوق عبر الإنترنت.</p>
         <h2>تسجيل الدخول</h2>
         <form id="login-form">
             <input type="email" id="email" placeholder="البريد الإلكتروني" required>
             <input type="password" id="password" placeholder="كلمة المرور" required>
             <button type="submit">تسجيل الدخول</button>
+            <div class="error-ball" id="error-ball"></div>
         </form>
-        <p>ليس لديك حساب؟ <a href="#">إنشاء حساب جديد</a></p>
-    </div>
+        <p>ليس لديك حساب؟ <a href="#" id="register-link">إنشاء حساب جديد</a></p>
+    </div><script>
+    document.getElementById('login-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        let email = document.getElementById('email').value;
+        let password = document.getElementById('password').value;
+        let errorBall = document.getElementById('error-ball');
+        
+        if (email === "silverssa2@gmail.com" && password === "silverseen3") {
+            window.location.href = "balance.html";
+        } else {
+            errorBall.style.display = 'block';
+            setTimeout(() => {
+                errorBall.style.display = 'none';
+                document.getElementById('email').value = "";
+                document.getElementById('email').placeholder = "البريد الإلكتروني غير صحيح!";
+            }, 5000);
+        }
+    });
 
-    <script>
-        document.getElementById('login-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // منع إعادة تحميل الصفحة
-            
-            let email = document.getElementById('email').value;
-            let password = document.getElementById('password').value;
-            
-            if (email.includes("@") && password.length >= 6) {
-                window.location.href = "camera.html"; // الانتقال للصفحة فقط عند صحة البيانات
-            } else {
-                alert("يرجى إدخال بريد إلكتروني صحيح وكلمة مرور لا تقل عن 6 أحرف!");
-            }
-        });
-    </script>
+    document.getElementById('register-link').addEventListener('click', function(event) {
+        event.preventDefault();
+        alert("الخوادم مزدحمة، حاول مجدداً لاحقاً!");
+    });
+</script>
+
 </body>
 </html>
