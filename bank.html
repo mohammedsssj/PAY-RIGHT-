@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="ar">
+<!DOCTYPE html><html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,27 +37,24 @@
         button:hover {
             background-color: #501b7a;
         }
-        .loader {
-            width: 50px;
-            height: 50px;
-            border: 5px solid white;
-            border-top: 5px solid blue;
+        .bouncing-ball {
+            width: 30px;
+            height: 30px;
+            background-color: red;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            position: relative;
+            animation: bounce 1s infinite alternate;
             display: none;
             margin: 20px auto;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-20px); }
         }
         .message {
             font-size: 18px;
             margin-top: 10px;
             display: none;
-        }
-        .success {
-            color: green;
         }
         .error {
             color: red;
@@ -66,126 +62,44 @@
     </style>
 </head>
 <body>
-
     <div class="container">
         <h2>تحويل الأموال</h2>
-
         <label>💵 المبلغ المراد سحبه ($):</label>
-        <input type="number" id="amount" placeholder="أدخل المبلغ" min="1" oninput="calculateConversion()">
-
+        <input type="number" id="amount" placeholder="أدخل المبلغ" min="1">
         <label>🏦 اختر البنك:</label>
-        <select id="bank" onchange="calculateConversion()">
+        <select id="bank">
             <option value="" disabled selected>اختر البنك</option>
-            <optgroup label="🇺🇸 بنوك أمريكا">
-                <option value="usd">Bank of America</option>
-                <option value="usd">Wells Fargo</option>
-                <option value="usd">Chase Bank</option>
-                <option value="usd">Citibank</option>
-                <option value="usd">Goldman Sachs</option>
+            <optgroup label="💳 المحافظ الرقمية">
+                <option value="paypal">PayPal</option>
             </optgroup>
-            <optgroup label="🇪🇬 بنوك مصر">
-                <option value="egp">البنك الأهلي المصري</option>
-                <option value="egp">بنك مصر</option>
-                <option value="egp">البنك التجاري الدولي (CIB)</option>
-                <option value="egp">بنك الإسكندرية</option>
-                <option value="egp">بنك القاهرة</option>
-            </optgroup>
-            <optgroup label="🇹🇳 بنوك تونس">
-                <option value="tnd">BIAT</option>
-                <option value="tnd">STB</option>
-                <option value="tnd">Amen Bank</option>
-                <option value="tnd">UIB</option>
-                <option value="tnd">Banque Zitouna</option>
-            </optgroup>
-            <optgroup label="🇸🇩 بنوك السودان">
-                <option value="sdg">بنك الخرطوم</option>
-                <option value="sdg">بنك فيصل الإسلامي</option>
-                <option value="sdg">بنك أم درمان الوطني</option>
-                <option value="sdg">بنك النيل</option>
-                <option value="sdg">بنك الإدخار والتنمية الاجتماعية</option>
-                <option value="sdg">ماي كاش</option>
+            <optgroup label="🌍 بنوك عالمية">
+                <option value="usd">HSBC</option>
+                <option value="usd">JPMorgan Chase</option>
+                <option value="usd">Deutsche Bank</option>
+                <option value="usd">Barclays</option>
             </optgroup>
         </select>
-
         <label>💳 رقم الحساب:</label>
         <input type="text" id="accountNumber" placeholder="أدخل رقم الحساب">
-
-        <label>🔄 المبلغ بعد التحويل:</label>
-        <input type="text" id="convertedAmount" readonly placeholder="المبلغ بالعملة المحلية">
-
-        <button onclick="startProcessing()">🔁 سحب الأموال</button>
-
-        <div class="loader" id="loading"></div>
-
-        <p class="message success" id="successMessage">✅ تمت العملية بنجاح!</p>
-        <p class="message error" id="errorMessage">🚨 يبدو أن الخوادم مشغولة، الرجاء المحاولة بعد ساعتين!</p>
+        <button onclick="showPasswordPrompt()">🔁 سحب الأموال</button>
+        <div class="bouncing-ball" id="bouncingBall"></div>
+        <p class="message error" id="errorMessage">🚨 كلمة المرور غير صحيحة!</p>
     </div>
-
     <script>
-        // أسعار الصرف
-        const exchangeRates = {
-            egp: 30.5, // 1 دولار = 30.5 جنيه مصري
-            tnd: 3.2,  // 1 دولار = 3.2 دينار تونسي
-            usd: 1,    // الدولار يبقى كما هو
-            sdg: 600   // 1 دولار = 600 جنيه سوداني
-        };
-
-        function calculateConversion() {
-            let amount = document.getElementById("amount").value;
-            let bankCurrency = document.getElementById("bank").value;
-            let convertedAmountField = document.getElementById("convertedAmount");
-
-            if (amount && bankCurrency) {
-                let convertedAmount = amount * exchangeRates[bankCurrency];
-                convertedAmountField.value = convertedAmount.toFixed(2) + " " + bankCurrency.toUpperCase();
-            } else {
-                convertedAmountField.value = "";
+        function showPasswordPrompt() {
+            let password = prompt("🔑 الرجاء إدخال كلمة المرور لتأكيد العملية:");
+            if (password) {
+                processTransaction(password);
             }
         }
-
-        function startProcessing() {
-            let amount = parseFloat(document.getElementById("amount").value);
-            let bank = document.getElementById("bank").value;
-            let accountNumber = document.getElementById("accountNumber").value;
-
-            if (!amount || !bank || !accountNumber) {
-                alert("⚠️ الرجاء ملء جميع الحقول قبل المتابعة!");
-                return;
-            }
-
-            document.getElementById("loading").style.display = "block";
-            document.getElementById("successMessage").style.display = "none";
+        function processTransaction(password) {
+            document.getElementById("bouncingBall").style.display = "block";
             document.getElementById("errorMessage").style.display = "none";
-
             setTimeout(() => {
-                document.getElementById("loading").style.display = "none";
-
-                if (bank === "sdg") {
-                    document.getElementById("successMessage").style.display = "block";
-                    updateBalance(amount);
-                } else {
-                    document.getElementById("errorMessage").style.display = "block";
-                }
-            }, 5000);
-        }
-
-        function updateBalance(amount) {
-            let currentBalance = localStorage.getItem("balance");
-            if (!currentBalance) {
-                currentBalance = 1000; // قيمة افتراضية
-            } else {
-                currentBalance = parseFloat(currentBalance);
-            }
-
-            if (currentBalance >= amount) {
-                currentBalance -= amount;
-                localStorage.setItem("balance", currentBalance);
-                alert(`تم خصم ${amount} دولار. الرصيد المتبقي: ${currentBalance} دولار`);
-            } else {
-                alert("⚠️ الرصيد غير كافٍ لإتمام العملية!");
-            }
+                document.getElementById("bouncingBall").style.display = "none";
+                document.getElementById("errorMessage").style.display = "block";
+            }, 7000);
         }
     </script>
-
 </body>
 </html>
