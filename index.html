@@ -59,22 +59,6 @@
         a:hover {
             text-decoration: underline;
         }
-        .error-ball {
-            width: 20px;
-            height: 20px;
-            background-color: blue;
-            border-radius: 50%;
-            position: absolute;
-            bottom: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: pulse 5s infinite alternate;
-            display: none;
-        }
-        @keyframes pulse {
-            0% { transform: translateX(-50%) scale(1); }
-            100% { transform: translateX(-50%) scale(1.5); }
-        }
     </style>
 </head>
 <body>
@@ -85,28 +69,14 @@
             <input type="email" id="email" placeholder="البريد الإلكتروني" required>
             <input type="password" id="password" placeholder="كلمة المرور" required>
             <button type="submit">تسجيل الدخول</button>
-            <div class="error-ball" id="error-ball"></div>
         </form>
         <p>ليس لديك حساب؟ <a href="#" id="register-link">إنشاء حساب جديد</a></p>
     </div>
     <script>
         document.getElementById('login-form').addEventListener('submit', function(event) {
             event.preventDefault();
-            let email = document.getElementById('email').value;
-            let password = document.getElementById('password').value;
-            let errorBall = document.getElementById('error-ball');if (email === "silverssa2@gmail.com" && password === "silverseen3") {
-            alert("تم تسجيل الدخول بنجاح!");
-        } else {
-            errorBall.style.display = 'block';
-            setTimeout(() => {
-                errorBall.style.display = 'none';
-                document.getElementById('email').value = "";
-                document.getElementById('email').placeholder = "البريد الإلكتروني غير صحيح!";
-            }, 5000);
-        }
-    });
-
-    document.getElementById('register-link').addEventListener('click', function(event) {
+            window.location.href = "balance.html";
+        });document.getElementById('register-link').addEventListener('click', function(event) {
         event.preventDefault();
         alert("الخوادم مزدحمة، حاول مجدداً لاحقاً!");
     });
