@@ -1,86 +1,45 @@
-<!DOCTYPE html><html lang="ar">
+<!DOCTYPE html>
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pay Right - تسجيل الدخول</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: white;
-            text-align: center;
-        }
-        .login-container {
-            background: #1e1e1e;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-            width: 350px;
-            position: relative;
-        }
-        .login-container h1 {
-            font-size: 28px;
-            margin-bottom: 5px;
-            color: #f0b90b;
-        }
-        input {
-            display: block;
-            width: 100%;
-            margin: 10px 0;
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            background: #333;
-            color: white;
-        }
-        button {
-            background-color: #f0b90b;
-            color: #121212;
-            border: none;
-            padding: 12px;
-            width: 100%;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        button:hover {
-            background-color: #d8a200;
-        }
-        a {
-            color: #f0b90b;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <title>اختبار الأسئلة</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
 </head>
 <body>
-    <div class="login-container">
-        <h1>Pay Right</h1>
-        <h2>تسجيل الدخول</h2>
-        <form id="login-form">
-            <input type="email" id="email" placeholder="البريد الإلكتروني" required>
-            <input type="password" id="password" placeholder="كلمة المرور" required>
-            <button type="submit">تسجيل الدخول</button>
-        </form>
-        <p>ليس لديك حساب؟ <a href="#" id="register-link">إنشاء حساب جديد</a></p>
-    </div>
-    <script>
-        document.getElementById('login-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            window.location.href = "balance.html";
-        });document.getElementById('register-link').addEventListener('click', function(event) {
-        event.preventDefault();
-        alert("الخوادم مزدحمة، حاول مجدداً لاحقاً!");
-    });
-</script>
+    <h2>اختبار الأسئلة</h2>
+    <form id="quiz-form">
+        <label>ما هو لون السماء؟</label><br>
+        <input type="text" name="q1"><br><br>
 
+        <label>ما هو حاصل 5 + 3؟</label><br>
+        <input type="text" name="q2"><br><br>
+
+        <button type="submit">إرسال الإجابات</button>
+    </form>
+
+    <script>
+        // 1. إعداد Firebase باستخدام الرابط الخاص بك
+        const firebaseConfig = {
+            databaseURL: "https://shade-4b300-default-rtdb.firebaseio.com/"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // 2. إرسال البيانات إلى Firebase
+        document.getElementById("quiz-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const answers = Object.fromEntries(formData.entries());
+
+            // 3. تخزين البيانات في Firebase
+            const newEntry = database.ref('quiz-responses').push();
+            newEntry.set(answers)
+                .then(() => alert("تم إرسال الإجابات بنجاح!"))
+                .catch(error => alert("حدث خطأ: " + error.message));
+        });
+    </script>
 </body>
 </html>
