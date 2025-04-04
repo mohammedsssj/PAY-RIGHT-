@@ -2,37 +2,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحديد شخصيتك</title>
+    <title>اختبار الشخصية</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #ff9966, #ff5e62);
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
             text-align: center;
-            color: white;
+            color: #333;
         }
-        h1 {
-            font-size: 2.5em;
-            margin-top: 20px;
-        }
-        form {
-            background: rgba(255, 255, 255, 0.2);
+        .container {
+            background: white;
+            width: 50%;
+            margin: auto;
             padding: 20px;
             border-radius: 10px;
-            display: inline-block;
-            text-align: left;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #ff5e62;
         }
         label {
             font-weight: bold;
-            font-size: 1.2em;
+            display: block;
+            margin-top: 15px;
         }
         select, input[type="file"], button {
             width: 100%;
             padding: 10px;
-            margin: 10px 0;
-            border: none;
+            margin-top: 10px;
+            border: 1px solid #ccc;
             border-radius: 5px;
         }
         button {
@@ -40,21 +41,24 @@
             color: white;
             font-size: 1.2em;
             cursor: pointer;
+            border: none;
         }
         button:hover {
-            background: #ff3b41;
+            background: #e0484f;
         }
     </style>
 </head>
 <body>
-    <h1>تحديد شخصيتك</h1>
-    <form id="quizForm">
-        <div id="questionsContainer"></div>
-        <label>رفع صورة (اختياري):</label>
-        <input type="file" id="imageUpload"><br>
-        <button type="submit">إرسال</button>
-    </form>
-    <h2 id="result"></h2><script>
+    <div class="container">
+        <h1>اختبار الشخصية</h1>
+        <form id="quizForm">
+            <div id="questionsContainer"></div>
+            <label>رفع صورة (اختياري):</label>
+            <input type="file" id="imageUpload"><br>
+            <button type="submit">إرسال</button>
+        </form>
+        <h2 id="result"></h2>
+    </div><script>
     const firebaseConfig = {
         apiKey: "YOUR_API_KEY",
         authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -69,26 +73,26 @@
     const storage = firebase.storage();
 
     const questions = [
-        "كيف تتفاعل مع المواقف الصعبة؟",
-        "ما هو أسلوبك في العمل؟",
-        "كيف تفضل قضاء عطلة نهاية الأسبوع؟",
-        "هل تفضل العمل الجماعي أم الفردي؟",
-        "كيف تتعامل مع الضغوط؟",
-        "هل تعتبر نفسك منفتحًا أم انطوائيًا؟",
-        "ما الذي يحفزك أكثر: التحدي أم الراحة؟",
-        "كيف تتخذ قراراتك اليومية؟",
-        "ما هو رد فعلك الأول عند مواجهة مشكلة؟",
-        "هل تميل إلى التخطيط المسبق أم العفوية؟",
-        "كيف تصف نفسك في المواقف الاجتماعية؟",
-        "هل تفضل المغامرة أم الاستقرار؟",
-        "ما هو العنصر الأهم في بيئة العمل بالنسبة لك؟",
-        "هل تفضل التعلم من التجربة أم من التعليم التقليدي؟",
-        "كيف ترى نفسك بعد خمس سنوات؟",
-        "هل تتبع العاطفة أم المنطق في قراراتك؟",
-        "كيف تصف علاقاتك مع الآخرين؟",
-        "ما هو الشيء الأكثر أهمية بالنسبة لك في الحياة؟",
-        "هل تحب التحديات الجديدة أم تفضل ما تعرفه مسبقًا؟",
-        "كيف تتعامل مع الفشل؟"
+        "ما هو أفضل وقت من اليوم بالنسبة لك؟",
+        "كيف تتفاعل مع التحديات؟",
+        "ما هو أسلوبك في التعامل مع الآخرين؟",
+        "هل تفضل العزلة أم التجمعات؟",
+        "كيف تتعامل مع الضغط النفسي؟",
+        "ما هو الشيء الذي يجذبك في الآخرين؟",
+        "كيف تقضي وقت فراغك؟",
+        "ما مدى أهمية التخطيط في حياتك؟",
+        "كيف تصف نفسك في بيئة العمل؟",
+        "ما هو الشيء الذي لا يمكنك الاستغناء عنه؟",
+        "كيف تتخذ قراراتك؟",
+        "ما هو العنصر الأساسي للسعادة بالنسبة لك؟",
+        "كيف تتفاعل مع الانتقادات؟",
+        "ما هو أسلوبك في حل المشكلات؟",
+        "ما مدى أهمية الطموح في حياتك؟",
+        "هل تعتمد على العاطفة أم المنطق في حياتك؟",
+        "كيف تصف قدرتك على التركيز؟",
+        "ما هو أكبر دافع لك في الحياة؟",
+        "كيف تصف تفاعلك مع الآخرين؟",
+        "هل تفضل الاستقرار أم التغيير؟"
     ];
 
     const questionsContainer = document.getElementById("questionsContainer");
@@ -104,9 +108,7 @@
             select.appendChild(option);
         });
         questionsContainer.appendChild(label);
-        questionsContainer.appendChild(document.createElement("br"));
         questionsContainer.appendChild(select);
-        questionsContainer.appendChild(document.createElement("br"));
     });
 
     document.getElementById("quizForm").addEventListener("submit", function(event) {
@@ -126,9 +128,9 @@
                 if (value === "دائمًا") score += 2;
                 else if (value === "أحيانًا") score += 1;
             });
-            if (score > 30) return "شخصية قوية ومستقلة";
+            if (score > 30) return "شخصية قيادية وطموحة";
             else if (score > 20) return "شخصية متوازنة ومرنة";
-            else return "شخصية هادئة ومسالمة";
+            else return "شخصية هادئة وحكيمة";
         }
         
         const personalityType = analyzePersonality(answers);
