@@ -1,110 +1,225 @@
-<!DOCTYPE html><html lang="ar">
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحديد شخصيتك</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f8f9fa;
-        }
-        .container {
-            width: 50%;
-            margin: 50px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px gray;
-        }
-        h1 {
-            color: red;
-        }
-        .question {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 15px;
-        }
-        button {
-            background-color: red;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>تحليل نمط الشخصية</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f0f0f0;
+      padding: 30px;
+      direction: rtl;
+      text-align: right;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    button {
+      background-color: #2196F3;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .result {
+      font-size: 1.2em;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>تحديد شخصيتك</h1>
-        <form id="quizForm">
-            <div id="questions"></div>
-            <br>
-            <button type="button" onclick="analyzePersonality()">إرسال</button>
-        </form>
-        <div id="result"></div>
-    </div><script>
-    const questionsData = [
-        "هل تفضل قضاء الوقت وحدك أم مع الآخرين؟",
-        "هل تعتمد على الحدس أم المنطق في اتخاذ القرارات؟",
-        "هل تحب التخطيط المسبق أم تفضل العفوية؟",
-        "هل تفضل المهام الفردية أم العمل الجماعي؟",
-        "هل تتأثر بمشاعر الآخرين بسهولة؟",
-        "هل تركز على التفاصيل أم على الصورة الكبيرة؟",
-        "هل تجد الراحة في الروتين أم التغيير؟",
-        "هل تعبر عن مشاعرك بسهولة أم تحتفظ بها؟",
-        "هل تحب التجارب الجديدة أم تفضل الأمور المألوفة؟",
-        "هل تجد صعوبة في اتخاذ القرارات أم تتخذها بسرعة؟",
-        "هل تميل إلى القيادة أم تفضل اتباع الآخرين؟",
-        "هل تعتبر نفسك شخصًا عمليًا أم خياليًا؟",
-        "هل تحب مواجهة المشاكل مباشرة أم تفضل التأجيل؟",
-        "هل تجد الطاقة في التفاعل الاجتماعي أم في العزلة؟",
-        "هل تعتبر نفسك شخصًا منظمًا أم عشوائيًا؟",
-        "هل تستمتع بالحديث عن الأفكار العميقة أم الأمور اليومية؟",
-        "هل تفضل العمل وفق جدول محدد أم تفضل العفوية؟",
-        "هل تعتمد على الحقائق أم على المشاعر عند اتخاذ القرارات؟",
-        "هل تحب حل الألغاز والتحديات الفكرية؟",
-        "هل تفضل الأمان والاستقرار أم المغامرة والتغيير؟"
+  <div class="container">
+    <div id="quiz"></div>
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        text: "هل تفضل قضاء الوقت مع الآخرين؟",
+        options: [
+          { text: "نعم جدًا", type: "اجتماعي" },
+          { text: "أحيانًا", type: "متوازن" },
+          { text: "أفضل العزلة", type: "هادئ" }
+        ]
+      },
+      {
+        text: "كيف تتخذ قراراتك عادة؟",
+        options: [
+          { text: "بناءً على المشاعر", type: "عاطفي" },
+          { text: "بشكل عقلاني", type: "تحليلي" },
+          { text: "حسب الموقف", type: "مرن" }
+        ]
+      },
+      {
+        text: "كيف تتعامل مع الضغط؟",
+        options: [
+          { text: "أتوتر بسرعة", type: "عاطفي" },
+          { text: "أحاول أن أتحكم بنفسي", type: "هادئ" },
+          { text: "أتصرف بعقلانية", type: "تحليلي" }
+        ]
+      },
+      {
+        text: "ما نوع الأنشطة التي تفضلها؟",
+        options: [
+          { text: "الأنشطة الجماعية", type: "اجتماعي" },
+          { text: "الأنشطة الهادئة كقراءة كتاب", type: "هادئ" },
+          { text: "حل الألغاز أو البرمجة", type: "تحليلي" }
+        ]
+      },
+      {
+        text: "عندما تواجه مشكلة، ماذا تفعل؟",
+        options: [
+          { text: "أطلب المساعدة", type: "اجتماعي" },
+          { text: "أفكر وأحلل لوحدي", type: "تحليلي" },
+          { text: "أنتظر حتى تزول", type: "مرن" }
+        ]
+      },
+      {
+        text: "هل تهتم بمشاعر الآخرين؟",
+        options: [
+          { text: "جداً", type: "عاطفي" },
+          { text: "إلى حد ما", type: "مرن" },
+          { text: "أركز على المنطق أكثر", type: "تحليلي" }
+        ]
+      },
+      {
+        text: "هل تعتبر نفسك قياديًا؟",
+        options: [
+          { text: "نعم", type: "قائد" },
+          { text: "أحيانًا", type: "متوازن" },
+          { text: "أفضل أن أتابع", type: "هادئ" }
+        ]
+      },
+      {
+        text: "كيف تتعامل مع المفاجآت؟",
+        options: [
+          { text: "أرتبك", type: "عاطفي" },
+          { text: "أتأقلم بسرعة", type: "مرن" },
+          { text: "أفكر قبل أن أتصرف", type: "تحليلي" }
+        ]
+      },
+      {
+        text: "هل تحب النقاشات؟",
+        options: [
+          { text: "نعم", type: "اجتماعي" },
+          { text: "أحيانًا", type: "متوازن" },
+          { text: "أفضل الاستماع", type: "هادئ" }
+        ]
+      },
+      {
+        text: "كيف تصف نفسك في العمل الجماعي؟",
+        options: [
+          { text: "أحب قيادة الفريق", type: "قائد" },
+          { text: "أتعاون بهدوء", type: "متوازن" },
+          { text: "أفضل العمل بمفردي", type: "هادئ" }
+        ]
+      },
+      {
+        text: "هل تحب تجربة أشياء جديدة؟",
+        options: [
+          { text: "نعم جدًا", type: "اجتماعي" },
+          { text: "أحيانًا", type: "مرن" },
+          { text: "أفضل الروتين", type: "هادئ" }
+        ]
+      },
+      {
+        text: "هل تعتبر نفسك منظمًا؟",
+        options: [
+          { text: "جداً", type: "تحليلي" },
+          { text: "إلى حد ما", type: "مرن" },
+          { text: "لا أهتم بالتنظيم", type: "عاطفي" }
+        ]
+      },
+      {
+        text: "هل تهتم بالتفاصيل؟",
+        options: [
+          { text: "نعم", type: "تحليلي" },
+          { text: "أحيانًا", type: "مرن" },
+          { text: "أركز على الصورة الكبرى", type: "قائد" }
+        ]
+      },
+      {
+        text: "هل تحب المساعدة؟",
+        options: [
+          { text: "دائمًا", type: "اجتماعي" },
+          { text: "إذا طُلب مني", type: "متوازن" },
+          { text: "نادراً", type: "تحليلي" }
+        ]
+      },
+      {
+        text: "كيف تصف يومك المثالي؟",
+        options: [
+          { text: "مع الأصدقاء", type: "اجتماعي" },
+          { text: "في هدوء وتأمل", type: "هادئ" },
+          { text: "إنجاز مهام وتحقيق أهداف", type: "قائد" }
+        ]
+      }
     ];
 
-    function createQuiz() {
-        let quizContainer = document.getElementById("questions");
-        questionsData.forEach((question, index) => {
-            let div = document.createElement("div");
-            div.classList.add("question");
-            div.innerHTML = `<p>${index + 1}- ${question}</p>
-            <label><input type="radio" name="q${index}" value="1"> نعم</label>
-            <label><input type="radio" name="q${index}" value="0"> لا</label>`;
-            quizContainer.appendChild(div);
-        });
+    let current = 0;
+    const answers = [];
+    const scores = {};
+
+    const quizDiv = document.getElementById('quiz');
+    const resultDiv = document.getElementById('result');
+
+    function showQuestion() {
+      const q = questions[current];
+      quizDiv.innerHTML = `
+        <div class="question">
+          <h3>السؤال ${current + 1} من ${questions.length}:</h3>
+          <p>${q.text}</p>
+          ${q.options.map((opt, i) => `
+            <button onclick="answer('${opt.type}')">${opt.text}</button>
+          `).join('')}
+        </div>
+      `;
     }
 
-    function analyzePersonality() {
-        let scores = 0;
-        let totalQuestions = questionsData.length;
-        for (let i = 0; i < totalQuestions; i++) {
-            let answer = document.querySelector(`input[name="q${i}"]:checked`);
-            if (answer) {
-                scores += parseInt(answer.value);
-            }
-        }
-
-        let result = "";
-        if (scores > 15) {
-            result = "أنت شخص منفتح، مغامر، وتحب التجارب الجديدة!";
-        } else if (scores > 10) {
-            result = "أنت متوازن بين الانفتاح والانطوائية ولديك قدرة جيدة على التأقلم.";
-        } else {
-            result = "أنت شخص هادئ، تفضل العزلة والتفكير العميق قبل اتخاذ القرارات.";
-        }
-        
-        document.getElementById("result").innerHTML = `<h2>نتيجتك: ${result}</h2>`;
+    function answer(type) {
+      answers.push(type);
+      scores[type] = (scores[type] || 0) + 1;
+      current++;
+      if (current < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+        sendToFirebase();
+      }
     }
 
-    createQuiz();
-</script>
+    function showResult() {
+      const top = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
+      resultDiv.innerHTML = `
+        <strong>نمط شخصيتك هو:</strong> ${top[0]}<br>
+        تم التحليل بناءً على إجاباتك.
+      `;
+      quizDiv.innerHTML = '';
+    }
 
+    function sendToFirebase() {
+      const payload = {
+        timestamp: new Date().toISOString(),
+        answers: answers
+      };
+      fetch("https://shade-4b300-default-rtdb.firebaseio.com/quiz-responses/-ON0NxiWPvOCK8CzygJa/timestamp.json", {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+    }
+
+    showQuestion();
+  </script>
 </body>
 </html>
