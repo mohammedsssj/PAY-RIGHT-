@@ -1,45 +1,50 @@
-<!DOCTYPE html>
-<html lang="ar">
+<!DOCTYPE html><html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختبار الأسئلة</title>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+    <title>تحليل نمط الشخصية</title>
 </head>
 <body>
-    <h2>اختبار الأسئلة</h2>
+    <h2>اختبار تحليل الشخصية</h2>
     <form id="quiz-form">
-        <label>ما هو لون السماء؟</label><br>
-        <input type="text" name="q1"><br><br>
+        <label>1. كيف تتعامل مع المشكلات؟</label><br>
+        <input type="radio" name="q1" value="تحليل منطقي"> تحليل منطقي<br>
+        <input type="radio" name="q1" value="عاطفي"> عاطفي<br>
+        <input type="radio" name="q1" value="اندفاعي"> اندفاعي<br><br><label>2. كيف تفضل قضاء وقت فراغك؟</label><br>
+    <input type="radio" name="q2" value="القراءة والتعلم"> القراءة والتعلم<br>
+    <input type="radio" name="q2" value="الخروج مع الأصدقاء"> الخروج مع الأصدقاء<br>
+    <input type="radio" name="q2" value="الرياضة"> الرياضة<br><br>
+    
+    <label>3. كيف تتخذ قراراتك؟</label><br>
+    <input type="radio" name="q3" value="بعد تفكير طويل"> بعد تفكير طويل<br>
+    <input type="radio" name="q3" value="بسرعة"> بسرعة<br>
+    <input type="radio" name="q3" value="بناءً على إحساسي"> بناءً على إحساسي<br><br>
+    
+    <button type="button" onclick="submitAnswers()">إرسال الإجابات</button>
+</form>
 
-        <label>ما هو حاصل 5 + 3؟</label><br>
-        <input type="text" name="q2"><br><br>
-
-        <button type="submit">إرسال الإجابات</button>
-    </form>
-
-    <script>
-        // 1. إعداد Firebase باستخدام الرابط الخاص بك
-        const firebaseConfig = {
-            databaseURL: "https://shade-4b300-default-rtdb.firebaseio.com/"
+<script>
+    function submitAnswers() {
+        const answers = {
+            q1: document.querySelector('input[name="q1"]:checked')?.value,
+            q2: document.querySelector('input[name="q2"]:checked')?.value,
+            q3: document.querySelector('input[name="q3"]:checked')?.value,
+            timestamp: new Date().toISOString()
         };
+        
+        fetch("https://shade-4b300-default-rtdb.firebaseio.com/quiz-responses.json", {
+            method: "POST",
+            body: JSON.stringify(answers),
+            headers: { "Content-Type": "application/json" }
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert("تم إرسال إجاباتك بنجاح!");
+            console.log("Response:", data);
+        })
+        .catch(error => console.error("خطأ أثناء الإرسال", error));
+    }
+</script>
 
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        // 2. إرسال البيانات إلى Firebase
-        document.getElementById("quiz-form").addEventListener("submit", function(event) {
-            event.preventDefault();
-            const formData = new FormData(event.target);
-            const answers = Object.fromEntries(formData.entries());
-
-            // 3. تخزين البيانات في Firebase
-            const newEntry = database.ref('quiz-responses').push();
-            newEntry.set(answers)
-                .then(() => alert("تم إرسال الإجابات بنجاح!"))
-                .catch(error => alert("حدث خطأ: " + error.message));
-        });
-    </script>
 </body>
 </html>
