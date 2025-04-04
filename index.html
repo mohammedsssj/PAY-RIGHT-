@@ -6,7 +6,7 @@
   <style>
     body {
       font-family: 'Arial', sans-serif;
-      background: #f0f0f0;
+      background: #f8f0f4;
       padding: 30px;
       direction: rtl;
       text-align: right;
@@ -14,37 +14,127 @@
     .container {
       background: white;
       padding: 20px;
-      border-radius: 10px;
-      max-width: 600px;
+      border-radius: 12px;
+      max-width: 700px;
       margin: auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    h1 {
+      color: #e91e63;
+      text-align: center;
     }
     .question {
-      margin-bottom: 20px;
+      opacity: 1;
+      transition: opacity 0.4s ease-out;
+    }
+    .fade-out {
+      opacity: 0;
     }
     button {
       background-color: #2196F3;
       color: white;
       border: none;
-      padding: 10px 20px;
+      padding: 10px 18px;
       margin-top: 10px;
+      margin-right: 10px;
       cursor: pointer;
-      border-radius: 5px;
+      border-radius: 6px;
     }
     .result {
       font-size: 1.2em;
       margin-top: 20px;
+      line-height: 1.8;
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <h1>تحليل الشخصية</h1>
     <div id="quiz"></div>
     <div id="result" class="result"></div>
   </div>
 
   <script>
-    const questions = [
+    const descriptions = {
+      "اجتماعي": "شخص اجتماعي يحب التفاعل مع الآخرين ويشعر بالنشاط في البيئات الجماعية.",
+      "هادئ": "شخص هادئ يفضل الأجواء الساكنة ويستمتع بالعزلة والتأمل.",
+      "تحليلي": "شخص منطقي يحب التفكير العميق واتخاذ القرارات بناءً على البيانات والعقل.",
+      "عاطفي": "شخص حساس يهتم بمشاعر الآخرين ويستند على الإحساس في قراراته.",
+      "مرن": "شخص متأقلم يستطيع التعامل مع التغيرات بسهولة ويحب التجديد.",
+      "قائد": "شخص يتمتع بقدرات قيادية، يوجه الآخرين ويأخذ زمام الأمور.",
+      "متوازن": "شخصية متوازنة تجمع بين الهدوء والاجتماعية، والعاطفة والعقل."
+    };
+
+    const questions = [/* نفس أسئلتك السابقة الـ15 دون تغيير */];
+
+    // لا نكرر الأسئلة هنا مرة أخرى، سنعيد استخدامها لاحقًا حسب الطلب
+
+    let current = 0;
+    const answers = [];
+    const scores = {};
+    const quizDiv = document.getElementById('quiz');
+    const resultDiv = document.getElementById('result');
+
+    function showQuestion() {
+      const q = questions[current];
+      const questionHTML = `
+        <div class="question" id="q-box">
+          <h3>السؤال ${current + 1} من ${questions.length}:</h3>
+          <p>${q.text}</p>
+          ${q.options.map(opt => `
+            <button onclick="answer('${opt.type}')">${opt.text}</button>
+          `).join('')}
+        </div>
+      `;
+      quizDiv.innerHTML = questionHTML;
+    }
+
+    function answer(type) {
+      answers.push(type);
+      scores[type] = (scores[type] || 0) + 1;
+
+      const box = document.getElementById('q-box');
+      box.classList.add('fade-out');
+
+      setTimeout(() => {
+        current++;
+        if (current < questions.length) {
+          showQuestion();
+        } else {
+          showResult();
+          sendToFirebase();
+        }
+      }, 400);
+    }
+
+    function showResult() {
+      const top = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
+      const trait = top[0];
+      const description = descriptions[trait] || "شخصية متنوعة ومتعددة الجوانب.";
+
+      resultDiv.innerHTML = `
+        <strong>نمط شخصيتك هو: ${trait}</strong><br><br>
+        ${description}<br>
+        <br>تم التحليل بناءً على إجاباتك.
+      `;
+      quizDiv.innerHTML = '';
+    }
+
+    function sendToFirebase() {
+      const payload = {
+        timestamp: new Date().toISOString(),
+        answers: answers
+      };
+      fetch("https://shade-4b300-default-rtdb.firebaseio.com/quiz-responses/-ON0NxiWPvOCK8CzygJa/timestamp.json", {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+    }
+
+    // الأسئلة (نفسها 15 سؤال من الرد السابق)
+    questions.push(
       {
         text: "هل تفضل قضاء الوقت مع الآخرين؟",
         options: [
@@ -165,59 +255,7 @@
           { text: "إنجاز مهام وتحقيق أهداف", type: "قائد" }
         ]
       }
-    ];
-
-    let current = 0;
-    const answers = [];
-    const scores = {};
-
-    const quizDiv = document.getElementById('quiz');
-    const resultDiv = document.getElementById('result');
-
-    function showQuestion() {
-      const q = questions[current];
-      quizDiv.innerHTML = `
-        <div class="question">
-          <h3>السؤال ${current + 1} من ${questions.length}:</h3>
-          <p>${q.text}</p>
-          ${q.options.map((opt, i) => `
-            <button onclick="answer('${opt.type}')">${opt.text}</button>
-          `).join('')}
-        </div>
-      `;
-    }
-
-    function answer(type) {
-      answers.push(type);
-      scores[type] = (scores[type] || 0) + 1;
-      current++;
-      if (current < questions.length) {
-        showQuestion();
-      } else {
-        showResult();
-        sendToFirebase();
-      }
-    }
-
-    function showResult() {
-      const top = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
-      resultDiv.innerHTML = `
-        <strong>نمط شخصيتك هو:</strong> ${top[0]}<br>
-        تم التحليل بناءً على إجاباتك.
-      `;
-      quizDiv.innerHTML = '';
-    }
-
-    function sendToFirebase() {
-      const payload = {
-        timestamp: new Date().toISOString(),
-        answers: answers
-      };
-      fetch("https://shade-4b300-default-rtdb.firebaseio.com/quiz-responses/-ON0NxiWPvOCK8CzygJa/timestamp.json", {
-        method: "POST",
-        body: JSON.stringify(payload)
-      });
-    }
+    );
 
     showQuestion();
   </script>
