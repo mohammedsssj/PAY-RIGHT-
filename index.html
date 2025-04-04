@@ -2,48 +2,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحليل نمط الشخصية</title>
+    <title>تحديد شخصيتك</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #ff9966, #ff5e62);
+            text-align: center;
+            color: white;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-top: 20px;
+        }
+        form {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            text-align: left;
+        }
+        label {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        select, input[type="file"], button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+        }
+        button {
+            background: #ff5e62;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #ff3b41;
+        }
+    </style>
 </head>
 <body>
-    <h2>اختبار تحليل الشخصية</h2>
-    <form id="quiz-form">
-        <label>1. كيف تتعامل مع المشكلات؟</label><br>
-        <input type="radio" name="q1" value="تحليل منطقي"> تحليل منطقي<br>
-        <input type="radio" name="q1" value="عاطفي"> عاطفي<br>
-        <input type="radio" name="q1" value="اندفاعي"> اندفاعي<br><br><label>2. كيف تفضل قضاء وقت فراغك؟</label><br>
-    <input type="radio" name="q2" value="القراءة والتعلم"> القراءة والتعلم<br>
-    <input type="radio" name="q2" value="الخروج مع الأصدقاء"> الخروج مع الأصدقاء<br>
-    <input type="radio" name="q2" value="الرياضة"> الرياضة<br><br>
-    
-    <label>3. كيف تتخذ قراراتك؟</label><br>
-    <input type="radio" name="q3" value="بعد تفكير طويل"> بعد تفكير طويل<br>
-    <input type="radio" name="q3" value="بسرعة"> بسرعة<br>
-    <input type="radio" name="q3" value="بناءً على إحساسي"> بناءً على إحساسي<br><br>
-    
-    <button type="button" onclick="submitAnswers()">إرسال الإجابات</button>
-</form>
+    <h1>تحديد شخصيتك</h1>
+    <form id="quizForm">
+        <div id="questionsContainer"></div>
+        <label>رفع صورة (اختياري):</label>
+        <input type="file" id="imageUpload"><br>
+        <button type="submit">إرسال</button>
+    </form>
+    <h2 id="result"></h2><script>
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+        databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com/",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT_ID.appspot.com",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const storage = firebase.storage();
 
-<script>
-    function submitAnswers() {
-        const answers = {
-            q1: document.querySelector('input[name="q1"]:checked')?.value,
-            q2: document.querySelector('input[name="q2"]:checked')?.value,
-            q3: document.querySelector('input[name="q3"]:checked')?.value,
-            timestamp: new Date().toISOString()
-        };
+    const questions = [
+        "كيف تتفاعل مع المواقف الصعبة؟",
+        "ما هو أسلوبك في العمل؟",
+        "كيف تفضل قضاء عطلة نهاية الأسبوع؟",
+        "هل تفضل العمل الجماعي أم الفردي؟",
+        "كيف تتعامل مع الضغوط؟",
+        "هل تعتبر نفسك منفتحًا أم انطوائيًا؟",
+        "ما الذي يحفزك أكثر: التحدي أم الراحة؟",
+        "كيف تتخذ قراراتك اليومية؟",
+        "ما هو رد فعلك الأول عند مواجهة مشكلة؟",
+        "هل تميل إلى التخطيط المسبق أم العفوية؟",
+        "كيف تصف نفسك في المواقف الاجتماعية؟",
+        "هل تفضل المغامرة أم الاستقرار؟",
+        "ما هو العنصر الأهم في بيئة العمل بالنسبة لك؟",
+        "هل تفضل التعلم من التجربة أم من التعليم التقليدي؟",
+        "كيف ترى نفسك بعد خمس سنوات؟",
+        "هل تتبع العاطفة أم المنطق في قراراتك؟",
+        "كيف تصف علاقاتك مع الآخرين؟",
+        "ما هو الشيء الأكثر أهمية بالنسبة لك في الحياة؟",
+        "هل تحب التحديات الجديدة أم تفضل ما تعرفه مسبقًا؟",
+        "كيف تتعامل مع الفشل؟"
+    ];
+
+    const questionsContainer = document.getElementById("questionsContainer");
+    questions.forEach((question, index) => {
+        const label = document.createElement("label");
+        label.textContent = question;
+        const select = document.createElement("select");
+        select.name = `q${index + 1}`;
+        ["دائمًا", "أحيانًا", "نادراً"].forEach(optionText => {
+            const option = document.createElement("option");
+            option.value = optionText;
+            option.textContent = optionText;
+            select.appendChild(option);
+        });
+        questionsContainer.appendChild(label);
+        questionsContainer.appendChild(document.createElement("br"));
+        questionsContainer.appendChild(select);
+        questionsContainer.appendChild(document.createElement("br"));
+    });
+
+    document.getElementById("quizForm").addEventListener("submit", function(event) {
+        event.preventDefault();
         
-        fetch("https://shade-4b300-default-rtdb.firebaseio.com/quiz-responses.json", {
-            method: "POST",
-            body: JSON.stringify(answers),
-            headers: { "Content-Type": "application/json" }
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert("تم إرسال إجاباتك بنجاح!");
-            console.log("Response:", data);
-        })
-        .catch(error => console.error("خطأ أثناء الإرسال", error));
-    }
+        const answers = {};
+        questions.forEach((_, index) => {
+            answers[`q${index + 1}`] = document.querySelector(`select[name='q${index + 1}']`).value;
+        });
+        
+        const file = document.getElementById("imageUpload").files[0];
+        const responsesRef = database.ref("quiz-responses");
+        
+        function analyzePersonality(answers) {
+            let score = 0;
+            Object.values(answers).forEach(value => {
+                if (value === "دائمًا") score += 2;
+                else if (value === "أحيانًا") score += 1;
+            });
+            if (score > 30) return "شخصية قوية ومستقلة";
+            else if (score > 20) return "شخصية متوازنة ومرنة";
+            else return "شخصية هادئة ومسالمة";
+        }
+        
+        const personalityType = analyzePersonality(answers);
+        
+        if (file) {
+            const storageRef = storage.ref("uploads/" + file.name);
+            storageRef.put(file).then(snapshot => {
+                snapshot.ref.getDownloadURL().then(url => {
+                    responsesRef.push({
+                        ...answers,
+                        personalityType,
+                        imageUrl: url,
+                        timestamp: Date.now()
+                    });
+                    document.getElementById("result").textContent = `نتيجة التحليل: ${personalityType}`;
+                });
+            });
+        } else {
+            responsesRef.push({
+                ...answers,
+                personalityType,
+                imageUrl: "",
+                timestamp: Date.now()
+            });
+            document.getElementById("result").textContent = `نتيجة التحليل: ${personalityType}`;
+        }
+    });
 </script>
 
 </body>
